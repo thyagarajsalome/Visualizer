@@ -4,7 +4,9 @@ import LinkedListVisualization from "./components/LinkedListVisualization";
 import StackVisualization from "./components/StackVisualization";
 import QueueVisualization from "./components/QueueVisualization";
 import Tree from "./components/Tree";
-import HashTable from "./components/nteractiveHashTable";
+import HashTable from "./components/InteractiveHashTable";
+import SetVisualization from "./components/SetVisualization";
+import GraphVisualization from "./components/GraphVisualization";
 
 const App = () => {
   return (
@@ -67,6 +69,26 @@ const App = () => {
           </h2>
           <div className="p-4">
             <HashTable />
+          </div>
+        </div>
+        {/* card */}
+        {/* card */}
+        <div className="bg-white rounded-lg shadow-md overflow-hidden">
+          <h2 className="text-xl font-semibold bg-blue-400 text-white p-4">
+            Sets Visualization
+          </h2>
+          <div className="p-4">
+            <SetVisualization />
+          </div>
+        </div>
+        {/* card */}
+        {/* card */}
+        <div className="bg-white rounded-lg shadow-md overflow-hidden">
+          <h2 className="text-xl font-semibold bg-blue-400 text-white p-4">
+            Graph Visualization
+          </h2>
+          <div className="p-4">
+            <GraphVisualization />
           </div>
         </div>
         {/* card */}
