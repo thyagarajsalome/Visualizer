@@ -3,6 +3,8 @@ import ArrayVisualizer from "./components/ArrayVisualizer";
 import LinkedListVisualization from "./components/LinkedListVisualization";
 import StackVisualization from "./components/StackVisualization";
 import QueueVisualization from "./components/QueueVisualization";
+import Tree from "./components/Tree";
+import HashTable from "./components/nteractiveHashTable";
 
 const App = () => {
   return (
@@ -45,6 +47,26 @@ const App = () => {
           </h2>
           <div className="p-4">
             <QueueVisualization />
+          </div>
+        </div>
+        {/* card */}
+        {/* card */}
+        <div className="bg-white rounded-lg shadow-md overflow-hidden">
+          <h2 className="text-xl font-semibold bg-blue-400 text-white p-4">
+            Tree Visualization
+          </h2>
+          <div className="p-4">
+            <Tree />
+          </div>
+        </div>
+        {/* card */}
+        {/* card */}
+        <div className="bg-white rounded-lg shadow-md overflow-hidden">
+          <h2 className="text-xl font-semibold bg-blue-400 text-white p-4">
+            Hash Table Visualization
+          </h2>
+          <div className="p-4">
+            <HashTable />
           </div>
         </div>
         {/* card */}
