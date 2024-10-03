@@ -1,5 +1,11 @@
 import React, { useState } from "react";
-import { ExternalLink, ArrowLeft } from "lucide-react";
+import {
+  ExternalLink,
+  ArrowLeft,
+  ArrowRight,
+  ArrowDown,
+  ArrowUp,
+} from "lucide-react";
 
 // Placeholder component for the main page cards
 const PlaceholderComponent = ({ title }) => (
@@ -123,6 +129,234 @@ const ArrayVisualizer = () => {
   );
 };
 
+// LinkedListVisualizer
+const Node = ({ data, isLast }) => (
+  <div className="flex items-center">
+    <div className="border-2 border-blue-500 rounded-lg p-2 w-16 h-16 flex items-center justify-center bg-blue-100">
+      <span className="text-sm font-bold">{data}</span>
+    </div>
+    {!isLast && <ArrowRight className="mx-2" />}
+  </div>
+);
+
+const LinkedListVisualization = () => {
+  const [list, setList] = useState([]);
+  const [newItem, setNewItem] = useState("");
+
+  const appendItem = () => {
+    if (newItem.trim() !== "") {
+      setList([...list, newItem.trim()]);
+      setNewItem("");
+    }
+  };
+
+  const resetList = () => {
+    setList([]);
+    setNewItem("");
+  };
+
+  return (
+    <div>
+      <div className="flex mb-4">
+        <input
+          type="text"
+          value={newItem}
+          onChange={(e) => setNewItem(e.target.value)}
+          placeholder="Enter item to append"
+          className="flex-grow mr-2 px-2 py-1 border rounded"
+        />
+        <button
+          onClick={appendItem}
+          className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 mr-2"
+        >
+          Append
+        </button>
+        <button
+          onClick={resetList}
+          className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+        >
+          Reset
+        </button>
+      </div>
+      <div className="flex flex-wrap items-center mt-4">
+        {list.map((item, index) => (
+          <Node key={index} data={item} isLast={index === list.length - 1} />
+        ))}
+        {list.length === 0 && (
+          <span className="text-gray-500">List is empty</span>
+        )}
+      </div>
+    </div>
+  );
+};
+
+// StackVisualization
+const StackItem = ({ value }) => (
+  <div className="border-2 border-purple-500 rounded-lg p-2 w-full h-12 flex items-center justify-center bg-purple-100 mb-1">
+    <span className="text-lg font-bold">{value}</span>
+  </div>
+);
+
+const StackVisualization = () => {
+  const [stack, setStack] = useState([]);
+  const [newItem, setNewItem] = useState("");
+  const [message, setMessage] = useState("");
+
+  const push = () => {
+    if (newItem.trim() !== "") {
+      setStack([...stack, newItem.trim()]);
+      setNewItem("");
+      setMessage(`Pushed "${newItem.trim()}" onto the stack.`);
+    }
+  };
+
+  const pop = () => {
+    if (stack.length > 0) {
+      const poppedItem = stack[stack.length - 1];
+      setStack(stack.slice(0, -1));
+      setMessage(`Popped "${poppedItem}" from the stack.`);
+    } else {
+      setMessage("Cannot pop from an empty stack.");
+    }
+  };
+
+  const peek = () => {
+    if (stack.length > 0) {
+      setMessage(`Top element is "${stack[stack.length - 1]}".`);
+    } else {
+      setMessage("Stack is empty. Cannot peek.");
+    }
+  };
+
+  return (
+    <div className="p-4 max-w-md mx-auto">
+      <h2 className="text-2xl font-bold mb-4">Stack Visualization</h2>
+      <div className="flex mb-4">
+        <input
+          type="text"
+          value={newItem}
+          onChange={(e) => setNewItem(e.target.value)}
+          placeholder="Enter item to push"
+          className="mr-2 p-2 border rounded"
+        />
+        <button
+          onClick={push}
+          className="mr-2 p-2 bg-blue-500 text-white rounded"
+        >
+          <ArrowDown className="mr-2 h-4 w-4 inline" /> Push
+        </button>
+        <button
+          onClick={pop}
+          className="mr-2 p-2 bg-red-500 text-white rounded"
+        >
+          <ArrowUp className="mr-2 h-4 w-4 inline" /> Pop
+        </button>
+        <button onClick={peek} className="p-2 bg-green-500 text-white rounded">
+          Peek
+        </button>
+      </div>
+      {message && (
+        <div className="mb-4 p-2 bg-yellow-100 border border-yellow-400 text-yellow-700 rounded">
+          {message}
+        </div>
+      )}
+      <div className="border-2 border-dashed border-gray-300 p-4 rounded-lg">
+        {stack.length === 0 ? (
+          <div className="text-center text-gray-500">Stack is empty</div>
+        ) : (
+          stack
+            .slice()
+            .reverse()
+            .map((item, index) => <StackItem key={index} value={item} />)
+        )}
+      </div>
+    </div>
+  );
+};
+
+// stack visuilization ends here
+
+// Queue visualization
+const QueueItem = ({ value }) => (
+  <div className="border-2 border-green-500 rounded-lg p-2 w-24 h-24 flex items-center justify-center bg-green-100 mx-1">
+    <span className="text-lg font-bold">{value}</span>
+  </div>
+);
+
+const QueueVisualization = () => {
+  const [queue, setQueue] = useState([]);
+  const [newItem, setNewItem] = useState("");
+  const [message, setMessage] = useState("");
+
+  const enqueue = () => {
+    if (newItem.trim() !== "") {
+      setQueue([...queue, newItem.trim()]);
+      setNewItem("");
+      setMessage(`Enqueued "${newItem.trim()}" to the queue.`);
+    }
+  };
+
+  const dequeue = () => {
+    if (queue.length > 0) {
+      const dequeuedItem = queue[0];
+      setQueue(queue.slice(1));
+      setMessage(`Dequeued "${dequeuedItem}" from the queue.`);
+    } else {
+      setMessage("Cannot dequeue from an empty queue.");
+    }
+  };
+
+  return (
+    <div className="p-4 max-w-4xl mx-auto">
+      <h2 className="text-2xl font-bold mb-4">Queue Visualization (FIFO)</h2>
+      <div className="flex mb-4">
+        <input
+          type="text"
+          value={newItem}
+          onChange={(e) => setNewItem(e.target.value)}
+          placeholder="Enter item to enqueue"
+          className="mr-2 p-2 border rounded"
+        />
+        <button
+          onClick={enqueue}
+          className="mr-2 p-2 bg-blue-500 text-white rounded flex items-center"
+        >
+          <ArrowRight className="mr-2 h-4 w-4" /> Enqueue
+        </button>
+        <button
+          onClick={dequeue}
+          className="p-2 border border-gray-300 rounded flex items-center"
+        >
+          <ArrowLeft className="mr-2 h-4 w-4" /> Dequeue
+        </button>
+      </div>
+      {message && (
+        <div className="mb-4 p-2 bg-yellow-100 border border-yellow-400 text-yellow-700 rounded">
+          {message}
+        </div>
+      )}
+      <div className="border-2 border-dashed border-gray-300 p-4 rounded-lg">
+        <div className="flex items-center justify-start overflow-x-auto">
+          {queue.length === 0 ? (
+            <div className="text-center text-gray-500 w-full">
+              Queue is empty
+            </div>
+          ) : (
+            <>
+              {queue.map((item, index) => (
+                <QueueItem key={index} value={item} />
+              ))}
+            </>
+          )}
+        </div>
+      </div>
+      <div className="mt-4 flex justify-between">
+        <div>Front (Dequeue)</div>
+        <div>Back (Enqueue)</div>
+      </div>
+    </div>
+  );
+};
 // Placeholder component for individual pages
 const PlaceholderPage = ({ title, onBack }) => (
   <div className="container mx-auto p-4">
@@ -216,7 +450,59 @@ const App = () => {
               Back to Home
             </button>
           </div>
+        ) : //
+        // ____________________________________________
+        currentPage === "Linked List Visualization" ? (
+          <div className="container mx-auto p-4">
+            <h1 className="text-3xl font-bold mb-8 text-center text-gray-800">
+              Linked List Visualization
+            </h1>
+            <LinkedListVisualization />
+            <button
+              onClick={navigateToHome}
+              className="mt-4 inline-flex items-center bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+            >
+              <ArrowLeft size={20} className="mr-2" />
+              Back to Home
+            </button>
+          </div>
+        ) : // _________________________________________
+        currentPage === "Stack Visualization" ? (
+          <div className="container mx-auto p-4">
+            <h1 className="text-3xl font-bold mb-8 text-center text-gray-800">
+              Stack Visualization
+            </h1>
+            <StackVisualization />
+            <button
+              onClick={navigateToHome}
+              className="mt-4 inline-flex items-center bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+            >
+              <ArrowLeft size={20} className="mr-2" />
+              Back to Home
+            </button>
+          </div>
+        ) : // _____________________Queue Visualization start____________________________
+
+        currentPage === "Queue Visualization" ? (
+          <div className="container mx-auto p-4">
+            <h1 className="text-3xl font-bold mb-8 text-center text-gray-800">
+              Queue Visualization
+            </h1>
+
+            <QueueVisualization />
+            <button
+              onClick={navigateToHome}
+              className="mt-4 inline-flex items-center bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+            >
+              <ArrowLeft size={20} className="mr-2" />
+              Back to Home
+            </button>
+          </div>
         ) : (
+          // ___________________Queue Visualization Ends____________
+
+          // ________________Place holder for back button___________
+          // _____________________________________________________________Back button
           <PlaceholderPage title={currentPage} onBack={navigateToHome} />
         )
       ) : (
