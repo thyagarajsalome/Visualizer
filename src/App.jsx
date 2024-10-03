@@ -5,6 +5,15 @@ import {
   ArrowRight,
   ArrowDown,
   ArrowUp,
+  Plus,
+  Minus,
+  ChevronRight,
+  ChevronDown,
+  RotateCcw,
+  PlusCircle,
+  MinusCircle,
+  Check,
+  X,
 } from "lucide-react";
 
 // Placeholder component for the main page cards
@@ -357,6 +366,216 @@ const QueueVisualization = () => {
     </div>
   );
 };
+
+const TreeNode = ({ node, onAddChild, onRemoveNode }) => {
+  const [isExpanded, setIsExpanded] = useState(false);
+  const [newChildName, setNewChildName] = useState("");
+
+  const handleAddChild = () => {
+    if (newChildName.trim()) {
+      onAddChild(node, newChildName.trim());
+      setNewChildName("");
+    }
+  };
+
+  return (
+    <div className="ml-4">
+      <div className="flex items-center mb-2">
+        {node.children.length > 0 && (
+          <button onClick={() => setIsExpanded(!isExpanded)} className="mr-2">
+            {isExpanded ? (
+              <ChevronDown size={20} />
+            ) : (
+              <ChevronRight size={20} />
+            )}
+          </button>
+        )}
+        <span className="font-semibold">{node.data}</span>
+        {node.data !== "root" && (
+          <button
+            onClick={() => onRemoveNode(node)}
+            className="ml-2 text-red-500"
+          >
+            <Minus size={16} />
+          </button>
+        )}
+      </div>
+      {isExpanded && (
+        <div className="ml-6">
+          {node.children.map((child, index) => (
+            <TreeNode
+              key={index}
+              node={child}
+              onAddChild={onAddChild}
+              onRemoveNode={onRemoveNode}
+            />
+          ))}
+        </div>
+      )}
+      <div className="flex items-center mt-2 ml-6">
+        <input
+          type="text"
+          value={newChildName}
+          onChange={(e) => setNewChildName(e.target.value)}
+          placeholder="New child name"
+          className="border rounded px-2 py-1 mr-2"
+        />
+        <button
+          onClick={handleAddChild}
+          className="bg-blue-500 text-white rounded px-2 py-1"
+        >
+          <Plus size={16} className="mr-1" /> Add Child
+        </button>
+      </div>
+    </div>
+  );
+};
+
+const Tree = () => {
+  const [root, setRoot] = useState({ data: "root", children: [] });
+
+  const addChild = (parent, childName) => {
+    const newChild = { data: childName, children: [] };
+    const updateTree = (node) => {
+      if (node === parent) {
+        return { ...node, children: [...node.children, newChild] };
+      }
+      return { ...node, children: node.children.map(updateTree) };
+    };
+    setRoot(updateTree(root));
+  };
+
+  const removeNode = (nodeToRemove) => {
+    const updateTree = (node) => ({
+      ...node,
+      children: node.children
+        .filter((child) => child !== nodeToRemove)
+        .map(updateTree),
+    });
+    setRoot(updateTree(root));
+  };
+
+  return (
+    <div className="p-4">
+      <h2 className="text-2xl font-bold mb-4">Tree Visualization</h2>
+      <TreeNode node={root} onAddChild={addChild} onRemoveNode={removeNode} />
+    </div>
+  );
+};
+
+// Sets visualization
+const SetVisualization = () => {
+  const [set, setSet] = useState(new Set());
+  const [inputValue, setInputValue] = useState("");
+  const [checkValue, setCheckValue] = useState("");
+  const [message, setMessage] = useState("");
+
+  const addElement = () => {
+    if (inputValue.trim() !== "") {
+      setSet((prevSet) => new Set(prevSet).add(inputValue.trim()));
+      setInputValue("");
+      setMessage(`Added ${inputValue.trim()} to the set.`);
+    }
+  };
+
+  const removeElement = () => {
+    if (inputValue.trim() !== "") {
+      const newSet = new Set(set);
+      const deleted = newSet.delete(inputValue.trim());
+      setSet(newSet);
+      setInputValue("");
+      setMessage(
+        deleted
+          ? `Removed ${inputValue.trim()} from the set.`
+          : `${inputValue.trim()} not found in the set.`
+      );
+    }
+  };
+
+  const checkElement = () => {
+    if (checkValue.trim() !== "") {
+      const exists = set.has(checkValue.trim());
+      setMessage(
+        exists
+          ? `${checkValue.trim()} exists in the set.`
+          : `${checkValue.trim()} does not exist in the set.`
+      );
+    }
+  };
+
+  return (
+    <div className="p-6 max-w-md mx-auto bg-white rounded-xl shadow-md space-y-4">
+      <h2 className="text-2xl font-bold text-center text-gray-800">
+        Set Visualization
+      </h2>
+
+      <div className="flex space-x-2">
+        <input
+          type="text"
+          value={inputValue}
+          onChange={(e) => setInputValue(e.target.value)}
+          className="flex-grow px-3 py-2 border rounded-md"
+          placeholder="Enter an element"
+        />
+        <button
+          onClick={addElement}
+          className="p-2 bg-green-500 text-white rounded-md hover:bg-green-600"
+        >
+          <PlusCircle size={24} />
+        </button>
+        <button
+          onClick={removeElement}
+          className="p-2 bg-red-500 text-white rounded-md hover:bg-red-600"
+        >
+          <MinusCircle size={24} />
+        </button>
+      </div>
+
+      <div className="flex space-x-2">
+        <input
+          type="text"
+          value={checkValue}
+          onChange={(e) => setCheckValue(e.target.value)}
+          className="flex-grow px-3 py-2 border rounded-md"
+          placeholder="Check for an element"
+        />
+        <button
+          onClick={checkElement}
+          className="p-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+        >
+          <Check size={24} />
+        </button>
+      </div>
+
+      <div className="bg-gray-100 p-4 rounded-md">
+        <h3 className="font-semibold mb-2">Current Set:</h3>
+        <div className="flex flex-wrap gap-2">
+          {Array.from(set).map((item, index) => (
+            <span
+              key={index}
+              className="bg-blue-200 px-2 py-1 rounded-md text-sm"
+            >
+              {item}
+            </span>
+          ))}
+        </div>
+      </div>
+
+      {message && (
+        <div
+          className="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4"
+          role="alert"
+        >
+          <p>{message}</p>
+        </div>
+      )}
+
+      <div className="text-sm text-gray-600">
+        <p>Set size: {set.size}</p>
+      </div>
+    </div>
+  );
+};
 // Placeholder component for individual pages
 const PlaceholderPage = ({ title, onBack }) => (
   <div className="container mx-auto p-4">
@@ -421,7 +640,6 @@ const App = () => {
     { title: "Stack Visualization" },
     { title: "Queue Visualization" },
     { title: "Tree Visualization" },
-    { title: "Hash Table Visualization" },
     { title: "Sets Visualization" },
   ];
 
@@ -498,11 +716,41 @@ const App = () => {
               Back to Home
             </button>
           </div>
-        ) : (
-          // ___________________Queue Visualization Ends____________
+        ) : // Tree Visualization
 
-          // ________________Place holder for back button___________
-          // _____________________________________________________________Back button
+        currentPage === "Tree Visualization" ? (
+          <div className="container mx-auto p-4">
+            <h1 className="text-3xl font-bold mb-8 text-center text-gray-800">
+              Tree Visualization
+            </h1>
+
+            <Tree />
+            <button
+              onClick={navigateToHome}
+              className="mt-4 inline-flex items-center bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+            >
+              <ArrowLeft size={20} className="mr-2" />
+              Back to Home
+            </button>
+          </div>
+        ) : // SetVisualization
+        currentPage === "Sets Visualization" ? (
+          <div className="container mx-auto p-4">
+            <h1 className="text-3xl font-bold mb-8 text-center text-gray-800">
+              Sets Visualization
+            </h1>
+
+            <SetVisualization />
+            <button
+              onClick={navigateToHome}
+              className="mt-4 inline-flex items-center bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+            >
+              <ArrowLeft size={20} className="mr-2" />
+              Back to Home
+            </button>
+          </div>
+        ) : (
+          // Place holder for Back
           <PlaceholderPage title={currentPage} onBack={navigateToHome} />
         )
       ) : (

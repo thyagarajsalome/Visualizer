@@ -1,11 +1,5 @@
 import React, { useState } from "react";
-import {
-  Plus,
-  Minus,
-  ChevronRight,
-  ChevronDown,
-  RotateCcw,
-} from "lucide-react";
+import { ChevronRight, ChevronDown, Plus, Minus } from "lucide-react";
 
 const TreeNode = ({ node, onAddChild, onRemoveNode }) => {
   const [isExpanded, setIsExpanded] = useState(false);
@@ -21,25 +15,20 @@ const TreeNode = ({ node, onAddChild, onRemoveNode }) => {
   return (
     <div className="ml-4">
       <div className="flex items-center mb-2">
-        {node.children.length > 0 ? (
-          <button
-            onClick={() => setIsExpanded(!isExpanded)}
-            className="mr-2 text-gray-600 hover:text-gray-800"
-          >
+        {node.children.length > 0 && (
+          <button onClick={() => setIsExpanded(!isExpanded)} className="mr-2">
             {isExpanded ? (
               <ChevronDown size={20} />
             ) : (
               <ChevronRight size={20} />
             )}
           </button>
-        ) : (
-          <span className="w-5 h-5 mr-2"></span>
         )}
         <span className="font-semibold">{node.data}</span>
         {node.data !== "root" && (
           <button
             onClick={() => onRemoveNode(node)}
-            className="ml-2 text-red-500 hover:text-red-700"
+            className="ml-2 text-red-500"
           >
             <Minus size={16} />
           </button>
@@ -63,11 +52,11 @@ const TreeNode = ({ node, onAddChild, onRemoveNode }) => {
           value={newChildName}
           onChange={(e) => setNewChildName(e.target.value)}
           placeholder="New child name"
-          className="border border-gray-300 rounded px-2 py-1 mr-2"
+          className="border rounded px-2 py-1 mr-2"
         />
         <button
           onClick={handleAddChild}
-          className="bg-blue-500 text-white rounded px-2 py-1 flex items-center"
+          className="bg-blue-500 text-white rounded px-2 py-1"
         >
           <Plus size={16} className="mr-1" /> Add Child
         </button>
@@ -77,12 +66,7 @@ const TreeNode = ({ node, onAddChild, onRemoveNode }) => {
 };
 
 const Tree = () => {
-  const initialRoot = {
-    data: "root",
-    children: [],
-  };
-
-  const [root, setRoot] = useState(initialRoot);
+  const [root, setRoot] = useState({ data: "root", children: [] });
 
   const addChild = (parent, childName) => {
     const newChild = { data: childName, children: [] };
@@ -96,32 +80,18 @@ const Tree = () => {
   };
 
   const removeNode = (nodeToRemove) => {
-    const updateTree = (node) => {
-      return {
-        ...node,
-        children: node.children
-          .filter((child) => child !== nodeToRemove)
-          .map(updateTree),
-      };
-    };
+    const updateTree = (node) => ({
+      ...node,
+      children: node.children
+        .filter((child) => child !== nodeToRemove)
+        .map(updateTree),
+    });
     setRoot(updateTree(root));
-  };
-
-  const resetTree = () => {
-    setRoot(initialRoot);
   };
 
   return (
     <div className="p-4">
-      <div className="flex justify-between items-center mb-4">
-        <h2 className="text-2xl font-bold">Tree Visualization</h2>
-        <button
-          onClick={resetTree}
-          className="bg-gray-500 text-white rounded px-3 py-1 flex items-center"
-        >
-          <RotateCcw size={16} className="mr-1" /> Reset Tree
-        </button>
-      </div>
+      <h2 className="text-2xl font-bold mb-4">Tree Visualization</h2>
       <TreeNode node={root} onAddChild={addChild} onRemoveNode={removeNode} />
     </div>
   );
